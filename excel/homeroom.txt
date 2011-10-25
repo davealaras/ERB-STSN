@@ -1,0 +1,12 @@
+For High School:
+50% - Participation - with flexible number of measurable items depending on the adviser
+30% - Written Output  -  with 3 of measurable items under it
+20% - Attendance - auto-computed as Total # of Days Present / Total # of Class Days x 100 x 20%
+          where the adviser encodes students' days absent on a monthly basis
+
+For Grade School:
+50% - Conduct - auto-computed based on the average of conduct grades given by each subject teacher including the homeroom adviser
+          homeroom adviser also encodes conduct grade of students
+40% - Involvement - - with 3 of measurable items under it
+10% - Attendance - auto-computed as Total # of Days Present / Total # of Class Days x 100 x 20%
+          where the adviser encodes students' days absent on a monthly basis

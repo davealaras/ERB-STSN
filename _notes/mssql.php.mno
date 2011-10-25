@@ -1,0 +1,4 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<info>
+	<infoitem key="UD_rc_user" value="name:CompCode;datatype:string,name:SectionCode;datatype:int,name:SY;datatype:int,name:RowNumber;datatype:int,name:ClassCode;datatype:string,name:Percent;datatype:int" />
+</info>

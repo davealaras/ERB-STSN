@@ -1,0 +1,31 @@
+if(rn==rownum && cn==colnum){
+				//FORMULA
+				console.log('r'+rawscore);
+				/*
+				if(rawscore>=0){
+					value = ((rawscore / perfectscore) * (100 - base)) + base;
+					$(res).text(value);
+					failGrade(res);
+				}
+				*/				
+				var factor = perfectscore/(100/base);
+				if(rawscore>=factor){
+					value = (rawscore-factor) * (24/factor)+75;
+					value = roundNumber(value,0);
+					$(res).text(value);
+					failGrade(res);
+					
+				}else  if(rawscore< factor && rawscore>=0){
+					value = rawscore * (4/factor)+70;
+					value = roundNumber(value,0);
+					$(res).text(value);
+					failGrade(res);
+				}
+					
+				else if(rawscore==-3){
+					//IGNORE
+					value=rawscore;
+					$(res).text('IGN');
+					$(res).removeClass('failgrade');
+				}
+			}

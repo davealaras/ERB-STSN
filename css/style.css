@@ -1,0 +1,260 @@
+@charset "utf-8";
+/* CSS Document */
+body{
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:16px;
+	color:#212121;
+	background:#B0E0E6;
+}
+.container{
+	margin: 0 auto;
+}
+.page{
+	width:900px;
+}
+.page div{
+	//border: 1px dashed #ddd;
+}
+.column{width:49%; height:inherit;}
+.left{ float:left;}
+.right{float:right;}
+.middle{ margin:25% 0;}
+.spacer{width:70px;}
+.outline{	
+	margin-top:-5px;
+	border:2px solid #aaa;
+	padding:10px;
+	background:#fff;}
+.neatbox{
+	display:inline-block; 
+	width:100%;
+}
+.nopad{
+	padding:0px;
+}
+.header{
+	height: 170px;
+	border-radius: 6px;
+	border:2px solid #888;
+	background:#E1EAF4;
+	z-index:100;
+}
+#logo img{
+	height:130px;
+	padding: 10px 0px;
+}
+#title, #subtitle{
+	width: 400px;
+	font-family:Georgia, "Times New Roman", Times, serif;
+}
+#title{
+	font-size:150%;
+	border-bottom: 2px solid midnightblue;
+	color:#191970;
+}
+#subtitle{
+		font-weight:bold;
+		margin-top:5px;
+		color:##212121;
+}
+form{
+	background:#F4F8FB;
+	padding:8px;
+	color:#191970;
+	border-radius:8px;
+}
+#login-form{
+	padding:10px;
+}
+h1{
+	font-size:16px;
+	font-family:Georgia, "Times New Roman", Times, serif;
+	padding:0;
+	margin:0;
+}
+input{
+	padding:0;margin:3px 0px;display:inline; 
+}
+button{
+	background:#ddd url(../img/bg-button-blue.png);
+	border:1px solid #111;
+	border-radius: 5px;
+	margin-top:0px;
+	font-size:13px;
+	padding:5px;
+	color:#21212;
+	font-weight:bold;
+}
+.main{
+	min-height: 500px;	
+}
+.footer{
+	font-family:Tahoma, Geneva, sans-serif;
+	font-size:12px;
+}
+#content{
+	padding-top:100px;
+}
+#entry-form{
+	margin-top:10px;
+}
+.tab{
+	border:2px solid #ddd;
+	margin:2px;
+	display:none;
+}
+.tab-content{
+	margin:10px 0px;
+	display: none; 
+}
+.tab-content .tab{
+	margin-left:30px;
+
+}
+.tab-content .tab .tab-header{
+	background:#ddd url(../img/buttonbg.png) center;
+	border-bottom:1px solid #aaa;
+}
+
+.tab-header{
+	height:20px;
+	margin:2px;
+	padding:4px;
+	background:#6CF url(../img/buttonbg.png) center;;
+	border-bottom:1px solid #6CF;
+	cursor:pointer;
+	font-weight:bold;
+}
+#container {
+position: relative;
+}
+#menu a{
+	text-decoration:none;
+	color: #212121;
+	background:#eee url(../img/buttonbg.png) center;
+	text-decoration: none;
+}
+#menu, #menu ul {
+padding: 0;
+margin: 0;
+list-style: none;
+margin-left:60px;
+}
+#menu li {
+float: left;
+border: 2px solid #DDD;
+margin:2px;
+padding:1px;}
+#menu a {
+display: block;
+margin:1px;
+width: 110px;
+padding:1px;
+}
+#menu li ul {
+position: absolute;
+width: 110px;
+left: -999em;
+margin-top:3px;
+}
+#menu li:hover ul, #menu li ul:hover {
+left:auto;
+}
+#menu li{
+	padding-top:10px;
+	font-size: 13px;
+font-weight: bold;
+}
+#menu li ul li{
+	padding-top:0px;
+	margin-left:-63px;
+}
+#response{
+	font-size:10px;
+	height:15px;
+	padding:2px;
+}
+							.datagrid td{
+								border:1px solid #ddd;
+								text-align:left;
+								vertical-align:middle;
+								height:20px;
+							}
+							.datagrid  .head{
+								text-align: center;
+font-size: 12px;
+font-weight: bold;
+							}
+							.datagrid td.noborder{
+								border:0px solid #ddd;
+							}
+							.micro{
+								width:25px;
+							}
+							.mini{
+								width:50px;
+							}
+							.small{
+								width:75px;	
+							}
+							.medium{
+								width:100px;
+							}
+							.large{
+								width:125px;
+							}
+							.xlarge{
+								width:210px;
+							}
+							.jumbo{
+								width:230px;
+							}
+							.percentage div{
+								cursor:pointer;
+								text-align:right;
+							}
+							.error-text{
+								font-weight:bold;
+							}
+							#error-terminal{
+								background:#FCC;
+								border:1px solid #C00;
+								padding:2px;
+							}
+							.disable-text{
+								color:#222;
+								font-weight:bold;
+							}
+
+							#total_label{
+								text-align:right;
+								padding-right:15px;
+							}
+							#total{
+								float:right;
+							}
+.students{
+	font-size:12px;
+}
+.students td{
+	padding:2px;
+}
+.smartbox{
+	text-align:right;
+}
+.dumbbox{
+	overflow:hidden;
+}
+#debug{
+	position: fixed;top: 0;left: 0;z-index: 12;
+}
+	  
+.conduct{
+	width:100px;
+	text-align:center;
+}
+.conduct span{
+	width:40px;
+	word-wrap:break-word;
+	display:block;
+}

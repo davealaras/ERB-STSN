@@ -1,0 +1,192 @@
+@charset "utf-8";
+/* CSS Document */
+.tab{
+	border:2px solid #ddd;
+	margin:2px;
+	display:none;
+}
+.tab-content{
+	margin:10px 0px;
+	display: none; 
+}
+.tab-content .tab{
+	margin-left:30px;
+
+}
+.tab-content .tab .tab-header{
+	background:#ddd url(../img/buttonbg.png) center;
+	border-bottom:1px solid #aaa;
+}
+
+.tab-header{
+	height:20px;
+	margin:2px;
+	padding:4px;
+	background:#6CF url(../img/buttonbg.png) center;
+	border-bottom:1px solid #6CF;
+	cursor:pointer;
+	font-weight:bold;
+}
+
+#response{
+	font-size:10px;
+	height:15px;
+	padding:2px;
+}
+.datagrid td{
+	border:1px solid #ddd;
+	text-align:left;
+	vertical-align:middle;
+	height:20px;
+}
+.datagrid  .head{
+	text-align: center;
+	font-size: 12px;
+	font-weight: bold;
+}
+.datagrid td.noborder{
+	border:0px solid #ddd;
+}
+.micro{
+	width:25px;
+}
+.mini{
+	width:50px;
+}
+.small{
+	width:75px;	
+}
+.medium{
+	width:100px;
+}
+.large{
+	width:125px;
+}
+.xlarge{
+	width:210px;
+}
+.xlarge2{
+	width:190px;	
+}
+.jumbo{
+	width:230px;
+}
+.percentage div{
+	cursor:pointer;
+	text-align:right;
+}
+.disable-text{
+	color:#222;
+	font-weight:bold;
+}
+
+#total_label{
+	text-align:right;
+	padding-right:15px;
+}
+#total{
+	float:right;
+}
+.students{
+	font-size:12px;
+}
+.students td{
+	padding:2px;
+}
+.smartbox{
+	text-align:right;
+}
+.dumbbox, .totalbox, .finalbox{
+	overflow:hidden;
+	text-align:right;
+	width:30px;
+}
+#debug{
+	position: fixed;top: 0;left: 0;z-index: 12;
+	width:100px;
+}
+	  
+.conduct{
+	width:50px;
+	text-align:center;
+}
+.conduct span{
+	width:40px;
+	word-wrap:break-word;
+	display:block;
+}
+.neatbox{
+display:inline-block;
+}
+#login{
+  min-height:400px;
+}
+#RIGHT-CONTENT-HOME{
+	min-height:500px;
+}
+.warning, .validationMessage{
+border: 1px solid #FF9; background:#ffc;
+text-align:center;
+font-size: 13px;
+font-weight:bold;
+margin: 5px;
+}
+.info{
+border: 1px solid #ccc;background:#fff;
+}
+.warning strong, .failgrade{
+color:#DC143C;
+}
+#progress-bar{
+margin:5px 0px;
+}
+.tooltip {
+	font-size:9px;
+	height:13px;
+	padding:10px;
+	color:#52594f;
+	border: 1px dashed #6cf;
+}
+.tip:hover, .tip:link, .tip{
+	text-decoration: none;
+	color:#52594F;
+	cursor: pointer;
+}
+.dropped{
+	font-weight:bold;
+}
+.hdrsmall{
+height:20px;
+width:50px;
+overflow:hidden;
+margin: 0 auto;
+}
+.invaliddata{
+	color:#DC143C;
+	background:#FFFF82;
+}
+.datagrid  .head_fix{
+	vertical-align:middle;
+}
+.hdrsmall_fix{
+	height: auto;
+	
+}
+.makabox{
+	color:#1A1AA6;
+}
+.posted{
+	font-weight:bold;
+}
+.exporter{
+	display:;
+}
+#tbConduct .smartbox{
+	text-align:center;
+}
+.tab .clear-div {
+	clear:both;
+}
+.individual, .batch{
+	display:none;
+}
