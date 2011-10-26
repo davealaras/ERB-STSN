@@ -60,7 +60,6 @@ class RawScoreFix{
 			}
 			$stmt1->close();		
 		}
-		echo $sql;
 		return $results;
 		
 	}
@@ -165,17 +164,19 @@ do{
 	$sy =getInput('ENTER SCHOOL YEAR: ');
 	$mes = $RawScoreFix->get_meas($subject, $section, $period,$sy);
 	$allow =  $EGB->check_rawscore($subject, $section[0], $period, $sy);
-	echo $allow;
+
 	$count =  count($mes);
 	if( $allow && $count>0){
+		echo "UPDATING RAWSCORES PLEASE WAIT...\n";
+		echo "  0.00 % Complete  $ctr of $count \n  ";
 		foreach($mes as $item){
 			$ctr++;
-			$perc = round(($ctr/$count) * 100);
+			$perc = number_format(($ctr/$count) * 100,2);
 			echo "$perc % Complete  $ctr of $count \n  ";
 			$RawScoreFix->update_rawscore($item['id'],$item['hdr'],$item['compcode'],$item['seccode'],$period,$sy);	
 		}
 	}else{
-		echo "Could not perform update. Reference to a null Header name \n";
+		echo "\nWARNING:\nCould not perform update. Reference to a null Header name \n\n";
 	}
 	$ans = getInput('UPDATE ANOTHER ? (Y)');
 }while($ans=='Y' ||$ans=='y');
