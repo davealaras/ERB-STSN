@@ -548,21 +548,22 @@ class EGB{
 	}
 	
 	// Check RawScore
-	public function check_rawscore( $seccode, $period, $sy){
+	public function check_rawscore($compcode, $seccode, $period, $sy){
 		$sql = "SELECT HeaderName FROM nrol_rawscore WHERE CompCode='$compcode' AND SectionCode='$seccode' AND Period='$period' AND SY='$sy'";
-		$results = array();
+		$val =false;
 		if ($stmt1 = $this->db_connection->prepare($sql)) {			
 			$stmt1->execute();
 			$stmt1->bind_result($hdr);
-			$index=0;
+			
 			while($stmt1->fetch()){
+				$val=true;
 				if($hdr==null){
-					return false;
+					$val = false;
 				}
 			}
 			$stmt1->close();		
 		}
-		return true;
+		return $val;
 	}
 	//Update Rawscore
 	public function update_rawscore($id, $hdr,$compcode, $seccode, $period, $sy){

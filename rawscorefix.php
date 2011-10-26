@@ -33,9 +33,9 @@ class RawScoreFix{
 		$this->db_connection->close();
 	}
 	
-	public function get_meas($subject, $section, $period){
+	public function get_meas($subject, $section, $period, $sy){
 		$results = array();
-		$cond =  "WHERE Period = '$period' AND CompCode = '$subject' AND ( ";
+		$cond =  "WHERE SY = '$sy' AND Period = '$period' AND CompCode = '$subject' AND ( ";
 		$c =0;
 		foreach($section as $s){
 			$cond .= " SectionCode = '$s'";
@@ -82,7 +82,7 @@ function getInput($msg){
  
 function select_section($EGB){
 	do{
-	$secname = getInput('LOOK FOR SECTION:');
+		$secname = getInput('LOOK FOR SECTION:');
 		$section_obj = $EGB->get_seccode(trim($secname));
 		$sections = count($section_obj);
 		if($sections){
@@ -99,7 +99,7 @@ function select_section($EGB){
 				}
 				do{
 				 $val = getInput('SELECT SECTION:');
-				 $allow = (is_numeric($val)&&((int)$val<$sections)) && (int)$val!=0;
+				 $allow = (is_numeric($val)&&((int)$val<=$sections)) && (int)$val!=0;
 				 if(!$allow){
 					echo "INVALID SELECTION! \n";
 				 }
@@ -112,6 +112,8 @@ function select_section($EGB){
 				 $ans = getInput("ARE YOU LOOKING FOR $dept $level - $secname  (Y)  ?: ");
 				 if($ans=='Y' ||$ans=='y'){
 					$index=0;
+				 }else{
+					return null;
 				 }
 			}
 			return $section_obj[$index];
@@ -152,16 +154,20 @@ getInput("HIT ANY KEY TO START\n");
 
 
 do{
-$sec = select_section($EGB);
-$subj = select_subject($EGB, $EGB->get_subjects($sec['dept'],$sec['level']));
-$ctr=0;
-$subject =$subj['compcode'];
-$section =$sec['seccode'];
-$period =getInput('ENTER PERIOD');
-$sy =getInput('ENTER SCHOOL YEAR');
-$mes = $RawScoreFix->get_meas($subject, $section, $period,$sy);
-$count =  count($mes);
-	if($EGB->check_rawscore( $seccode, $period, $sy)){
+	do{
+		$sec = select_section($EGB);
+	}while($sec ==null);
+	$subj = select_subject($EGB, $EGB->get_subjects($sec['dept'],$sec['level']));
+	$ctr=0;
+	$subject =$subj['compcode'];
+	$section =array($sec['seccode']);
+	$period =getInput('ENTER PERIOD: ');
+	$sy =getInput('ENTER SCHOOL YEAR: ');
+	$mes = $RawScoreFix->get_meas($subject, $section, $period,$sy);
+	$allow =  $EGB->check_rawscore($subject, $section[0], $period, $sy);
+	echo $allow;
+	$count =  count($mes);
+	if( $allow && $count>0){
 		foreach($mes as $item){
 			$ctr++;
 			$perc = round(($ctr/$count) * 100);
@@ -169,7 +175,7 @@ $count =  count($mes);
 			$RawScoreFix->update_rawscore($item['id'],$item['hdr'],$item['compcode'],$item['seccode'],$period,$sy);	
 		}
 	}else{
-		echo "Could not perform update. Reference to a null Header name";
+		echo "Could not perform update. Reference to a null Header name \n";
 	}
 	$ans = getInput('UPDATE ANOTHER ? (Y)');
 }while($ans=='Y' ||$ans=='y');
