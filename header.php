@@ -528,9 +528,9 @@ class EGB{
 		return $queries;
 	}
 	//Get Measurable Items
-	public function get_meas($compcode, $seccode, $period){
+	public function get_meas($compcode, $seccode, $period, $sy){
 		$results = array();
-		$sql ="SELECT MeasKey, HeaderName, CompCode, SectionCode FROM nrol_measitem WHERE CompCode = '$compcode' AND SectionCode='$seccode' AND Period='$period' ";
+		$sql ="SELECT MeasKey, HeaderName, CompCode, SectionCode FROM nrol_measitem WHERE CompCode = '$compcode' AND SectionCode='$seccode' AND Period='$period' AND SY='$sy' ";
 		if ($stmt1 = $this->db_connection->prepare($sql)) {			
 			$stmt1->execute();
 			$stmt1->bind_result($id, $hdr,$compcode, $seccode);
@@ -546,9 +546,27 @@ class EGB{
 		}
 		return $results;
 	}
+	
+	// Check RawScore
+	public function check_rawscore( $seccode, $period, $sy){
+		$sql = "SELECT HeaderName FROM nrol_rawscore WHERE CompCode='$compcode' AND SectionCode='$seccode' AND Period='$period' AND SY='$sy'";
+		$results = array();
+		if ($stmt1 = $this->db_connection->prepare($sql)) {			
+			$stmt1->execute();
+			$stmt1->bind_result($hdr);
+			$index=0;
+			while($stmt1->fetch()){
+				if($hdr==null){
+					return false;
+				}
+			}
+			$stmt1->close();		
+		}
+		return true;
+	}
 	//Update Rawscore
-	public function update_rawscore($id, $hdr,$compcode, $seccode, $period){
-		$sql = "UPDATE nrol_rawscore SET MeasKey='$id' WHERE HeaderName='$hdr' AND CompCode='$compcode' AND SectionCode='$seccode' AND Period='$period'";
+	public function update_rawscore($id, $hdr,$compcode, $seccode, $period, $sy){
+		$sql = "UPDATE nrol_rawscore SET MeasKey='$id' WHERE HeaderName='$hdr' AND CompCode='$compcode' AND SectionCode='$seccode' AND Period='$period' AND SY='$sy' ";
 		if ($stmt = $this->db_connection->prepare($sql)) {
 			$stmt->execute();
 			$stmt->fetch();

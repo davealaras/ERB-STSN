@@ -126,6 +126,7 @@ function select_subject($EGB, $subjects){
 	$ctr = 1;
 	foreach($subjects as $s){
 		$nomen=$s['nomen'];
+		$nomen = $nomen==null? '********************ERR: '.$s['compcode'].'*******************': $nomen;
 		echo "$ctr -  $nomen \n";
 		$ctr++;
 	}
@@ -147,28 +148,32 @@ echo "RAWSCORE FIX TO DATA MUTATION/MIGRATION \n";
 echo "v 1.1  TSSi \n";
 getInput("HIT ANY KEY TO START\n");
 
-$section = select_section($EGB);
-$subject = select_subject($EGB, $EGB->get_subjects($section['dept'],$section['level']));
-print_r($section);
-print_r($subject);
-/*
-do{
-$ctr=0;
-$subject =getInput('ENTER COMPCODE');
-$section =explode('.',getInput('ENTER SECTIONCODE (DOT DELIMITED)'));
-$period =getInput('ENTER PERIOD');
-$mes = $RawScoreFix->get_meas($subject, $section, $period);
-$count =  count($mes);
 
-foreach($mes as $item){
-	$ctr++;
-	$perc = round(($ctr/$count) * 100);
-	echo "$perc % Complete  $ctr of $count \n  ";
-	$RawScoreFix->update_rawscore($item['id'],$item['hdr'],$item['compcode'],$item['seccode'],$period);	
-}
-$ans = getInput('UPDATE ANOTHER ? (Y)');
+
+
+do{
+$sec = select_section($EGB);
+$subj = select_subject($EGB, $EGB->get_subjects($sec['dept'],$sec['level']));
+$ctr=0;
+$subject =$subj['compcode'];
+$section =$sec['seccode'];
+$period =getInput('ENTER PERIOD');
+$sy =getInput('ENTER SCHOOL YEAR');
+$mes = $RawScoreFix->get_meas($subject, $section, $period,$sy);
+$count =  count($mes);
+	if($EGB->check_rawscore( $seccode, $period, $sy)){
+		foreach($mes as $item){
+			$ctr++;
+			$perc = round(($ctr/$count) * 100);
+			echo "$perc % Complete  $ctr of $count \n  ";
+			$RawScoreFix->update_rawscore($item['id'],$item['hdr'],$item['compcode'],$item['seccode'],$period,$sy);	
+		}
+	}else{
+		echo "Could not perform update. Reference to a null Header name";
+	}
+	$ans = getInput('UPDATE ANOTHER ? (Y)');
 }while($ans=='Y' ||$ans=='y');
-*/
+
 $RawScoreFix->db_close();
 $EGB->db_close();
 ?>
