@@ -6,7 +6,7 @@ $EGB->db_connect();				//Open database connection
 $func = $_REQUEST['func'];			//Get function code
 $response = array();
 if(isset($func)){
-	//$_SESSION['faculty_id'] = 4;
+	$_SESSION['faculty_id'] = 36;
 	if($func=='getSession'){
 		if(!isset($_SESSION['username']) && !isset($_SESSION['password'])){
 			$_SESSION['username']=isset($_COOKIE['username'])?$_COOKIE['username']:' ';
@@ -180,6 +180,9 @@ if(isset($func)){
 		$EGB->prepare_reccord_measitem($comp_code, $section_code, $sy, $period);
 		for($i=0;$i<count($colnumber); $i++){
 			$EGB->save_record_measitem($colnumber[$i],$classcode[$i],$header[$i],$description[$i],$noofitem[$i], $base[$i],$sy, $period, $section_code,$comp_code);
+		}
+		foreach($EGB->get_meas($comp_code, $section_code, $period) as $item){
+			$EGB->update_rawscore($item['id'],$item['hdr'],$item['compcode'],$item['seccode'],$period);
 		}
 	}else if($func=='save_ms_tmplt'){
 		$response['sy'] = $sy = $_POST['sy'];

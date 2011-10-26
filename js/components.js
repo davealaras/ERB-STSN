@@ -9,6 +9,15 @@ $(document).ready(function() {
 		}
 	});
 	
+	$( "#dialog:ui-dialog" ).dialog( "destroy" );
+	$( "#dialog-modal" ).dialog({
+		autoOpen:false,
+		height: 200,
+		modal: true,
+		draggable:false,
+		closeOnEscape: false,
+		open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+	});
 	$.ajax({
 			type: 'GET',
 			url: 'ajax.php',
@@ -661,6 +670,7 @@ $(document).ready(function() {
 			
 				var today = new Date();
 				var utcDate = today.toUTCString();
+				
 				//Save  record
 					$.ajax({
 						type: 'GET',
@@ -742,14 +752,14 @@ $(document).ready(function() {
 								});
 								$('#templates').attr('disabled', 'disabled');
 								//Submit record
-								
+								$( "#dialog-modal" ).dialog( "open" );
 								$.ajax({
 									type: 'POST',
 									url: 'ajax.php',
 									data: {'section_code' : section_code,'sy':sy, 'period': period, 'classcode': classcode, 'colnumber': colnumber, 
 											'header':header, 'description': description, 'noofitem':noofitem, 'base':base, 'func': 'save_record_measitem'},
 									success: function(data) {
-										alert('Record saved');
+										$( "#dialog-modal" ).dialog( "close" );
 										var classcode = $('#load').find('option:selected').val();
 										var sy = $('#sy').find('option:selected').val();
 										var period = $('#period').find('option:selected').val();

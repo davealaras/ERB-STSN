@@ -474,11 +474,33 @@ class EGB{
 			$stmt->close();		
 		}
 	}
-	//MS Save Record Measurable Items
-	public function ms_save_record_measitem($colnumber,$classcode,$header,$description,$noofitem, $base,$sy,  $period,$section_code,$comp_code){
-		$query = "INSERT INTO nrol_measitem (ColNumber, ClassCode, HeaderName, Description,  Items, Base, SY, Period, SectionCode, CompCode) ";
-		$query .=" VALUES('$colnumber','$classcode', '$header', '$description', '$noofitem', '$base', '$sy', ' $period', '$section_code', '$comp_code')";
-		mssql_query($query);
+	//Get Measurable Items
+	public function get_meas($compcode, $seccode, $period){
+		$results = array();
+		$sql ="SELECT MeasKey, HeaderName, CompCode, SectionCode FROM nrol_measitem WHERE CompCode = '$compcode' AND SectionCode='$seccode' AND Period='$period' ";
+		if ($stmt1 = $this->db_connection->prepare($sql)) {			
+			$stmt1->execute();
+			$stmt1->bind_result($id, $hdr,$compcode, $seccode);
+			$index=0;
+			while($stmt1->fetch()){
+				$results[$index]['id']=$id;
+				$results[$index]['hdr']=$hdr;
+				$results[$index]['compcode']=$compcode;
+				$results[$index]['seccode']=$seccode;
+				$index+=1;
+			}
+			$stmt1->close();		
+		}
+		return $results;
+	}
+	//Update Rawscore
+	public function update_rawscore($id, $hdr,$compcode, $seccode, $period){
+		$sql = "UPDATE nrol_rawscore SET MeasKey='$id' WHERE HeaderName='$hdr' AND CompCode='$compcode' AND SectionCode='$seccode' AND Period='$period'";
+		if ($stmt = $this->db_connection->prepare($sql)) {
+			$stmt->execute();
+			$stmt->fetch();
+			$stmt->close();
+		}
 	}
 	//Get System Default
 	public function get_sys_defa(){
