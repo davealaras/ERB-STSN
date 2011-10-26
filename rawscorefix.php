@@ -1,5 +1,6 @@
 <?php
 include_once ('database_login.php');
+include_once ('header.php');
 class RawScoreFix{
 	private $db_server = "localhost:3306"; 
 	private $db_username; 
@@ -32,9 +33,20 @@ class RawScoreFix{
 		$this->db_connection->close();
 	}
 	
-	public function get_meas(){
+	public function get_meas($subject, $section, $period){
 		$results = array();
-		$sql ="SELECT MeasKey, HeaderName, CompCode, SectionCode FROM nrol_measitem ";
+		$cond =  "WHERE Period = '$period' AND CompCode = '$subject' AND ( ";
+		$c =0;
+		foreach($section as $s){
+			$cond .= " SectionCode = '$s'";
+			if($c < count($section) -1 ){
+				$cond .=" OR ";
+			}else{
+				$cond .=" ) ";
+			}
+			$c++;
+		}
+		$sql ="SELECT MeasKey, HeaderName, CompCode, SectionCode FROM nrol_measitem ". $cond;
 		if ($stmt1 = $this->db_connection->prepare($sql)) {			
 			$stmt1->execute();
 			$stmt1->bind_result($id, $hdr,$compcode, $seccode);
@@ -48,10 +60,12 @@ class RawScoreFix{
 			}
 			$stmt1->close();		
 		}
+		echo $sql;
 		return $results;
+		
 	}
-	public function update_rawscore($id, $hdr,$compcode, $seccode){
-		$sql = "UPDATE nrol_rawscore SET MeasKey='$id' WHERE HeaderName='$hdr' AND CompCode='$compcode' AND SectionCode='$seccode' AND Period='2' ";
+	public function update_rawscore($id, $hdr,$compcode, $seccode, $period){
+		$sql = "UPDATE nrol_rawscore SET MeasKey='$id' WHERE Headername='$hdr' AND CompCode='$compcode' AND SectionCode='$seccode' AND Period='$period' ";
 		if ($stmt = $this->db_connection->prepare($sql)) {
 			$stmt->execute();
 			$stmt->fetch();
@@ -59,21 +73,102 @@ class RawScoreFix{
 		}
 	}
 }
+
+function getInput($msg){
+  fwrite(STDOUT, "$msg");
+  $varin = trim(fgets(STDIN));
+  return $varin;
+}
+ 
+function select_section($EGB){
+	do{
+	$secname = getInput('LOOK FOR SECTION:');
+		$section_obj = $EGB->get_seccode(trim($secname));
+		$sections = count($section_obj);
+		if($sections){
+			$index = 0;
+			$ctr =  1 ;
+			if($sections>1){
+				echo "$sections SECTIONS FOUND\n";
+				foreach($section_obj as $s){
+					 $dept = $s['dept'];
+					 $level = $s['level'];
+					 $secname = $s['section'];
+					echo "$ctr . $dept $level - $secname \n";
+					$ctr++;
+				}
+				do{
+				 $val = getInput('SELECT SECTION:');
+				 $allow = (is_numeric($val)&&((int)$val<$sections)) && (int)$val!=0;
+				 if(!$allow){
+					echo "INVALID SELECTION! \n";
+				 }
+				}while(!$allow);
+				$index = (int) $val  - 1;
+			}else{
+				 $dept = $section_obj[0]['dept'];
+				 $level = $section_obj[0]['level'];
+				 $secname =$section_obj[0]['section'];
+				 $ans = getInput("ARE YOU LOOKING FOR $dept $level - $secname  (Y)  ?: ");
+				 if($ans=='Y' ||$ans=='y'){
+					$index=0;
+				 }
+			}
+			return $section_obj[$index];
+		}
+			$ans = getInput('Can not find section. Try again (Y) ?: ');	
+	}while($ans=='Y' ||$ans=='y');
+}
+
+function select_subject($EGB, $subjects){
+	echo "SUBJECTS AVAILABLE \n";
+	$index=0;
+	$ctr = 1;
+	foreach($subjects as $s){
+		$nomen=$s['nomen'];
+		echo "$ctr -  $nomen \n";
+		$ctr++;
+	}
+	do{
+	 $val = getInput('SELECT SUBJECT:');
+	 $allow = (is_numeric($val)&&((int)$val<count($subjects))) && (int)$val!=0;
+	 if(!$allow){
+		echo "INVALID SELECTION! \n";
+	 }
+	}while(!$allow);
+	$index = (int) $val  - 1;
+	return $subjects[$index];
+}
 $RawScoreFix = new RawScoreFix($db_username,$db_password,$db_server,$db_name);
 $RawScoreFix->db_connect();
+$EGB->db_connect();
+
+echo "RAWSCORE FIX TO DATA MUTATION/MIGRATION \n";
+echo "v 1.1  TSSi \n";
+getInput("HIT ANY KEY TO START\n");
+
+$section = select_section($EGB);
+$subject = select_subject($EGB, $EGB->get_subjects($section['dept'],$section['level']));
+print_r($section);
+print_r($subject);
+/*
+do{
 $ctr=0;
-$mes = $RawScoreFix->get_meas();
+$subject =getInput('ENTER COMPCODE');
+$section =explode('.',getInput('ENTER SECTIONCODE (DOT DELIMITED)'));
+$period =getInput('ENTER PERIOD');
+$mes = $RawScoreFix->get_meas($subject, $section, $period);
 $count =  count($mes);
 
 foreach($mes as $item){
 	$ctr++;
 	$perc = round(($ctr/$count) * 100);
 	echo "$perc % Complete  $ctr of $count \n  ";
-	
-	$RawScoreFix->update_rawscore($item['id'],$item['hdr'],$item['compcode'],$item['seccode']);
-	
+	$RawScoreFix->update_rawscore($item['id'],$item['hdr'],$item['compcode'],$item['seccode'],$period);	
 }
-
+$ans = getInput('UPDATE ANOTHER ? (Y)');
+}while($ans=='Y' ||$ans=='y');
+*/
 $RawScoreFix->db_close();
-
+$EGB->db_close();
 ?>

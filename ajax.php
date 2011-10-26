@@ -171,19 +171,21 @@ if(isset($func)){
 		$code = explode("-",$_POST['section_code']);
 		$response['section_code'] = $section_code =$code[0];
 		$response['comp_code'] = $comp_code =$code[1];
+		$response['key'] = $key = $_POST['key'];
 		$response['classcode'] = $classcode = $_POST['classcode'];
 		$response['colnumber'] = $colnumber = $_POST['colnumber'];
 		$response['header'] = $header = $_POST['header'];
 		$response['description'] = $description = $_POST['description'];
 		$response['noofitem'] = $noofitem = $_POST['noofitem'];
 		$response['base'] = $base = $_POST['base'];
-		$EGB->prepare_reccord_measitem($comp_code, $section_code, $sy, $period);
+		$response['queries']=array();
 		for($i=0;$i<count($colnumber); $i++){
-			$EGB->save_record_measitem($colnumber[$i],$classcode[$i],$header[$i],$description[$i],$noofitem[$i], $base[$i],$sy, $period, $section_code,$comp_code);
+			$query  = $EGB->save_record_measitem($key[$i], $colnumber[$i],$classcode[$i],$header[$i],$description[$i],$noofitem[$i], $base[$i],$sy, $period, $section_code,$comp_code);
+			array_push($response['queries'], $query);
 		}
-		foreach($EGB->get_meas($comp_code, $section_code, $period) as $item){
-			$EGB->update_rawscore($item['id'],$item['hdr'],$item['compcode'],$item['seccode'],$period);
-		}
+	}else if($func=='del_measitem'){
+		$response['key'] = $key = $_POST['key'];
+		$response['query']=$EGB->delete_measitem($key);
 	}else if($func=='save_ms_tmplt'){
 		$response['sy'] = $sy = $_POST['sy'];
 		$response['comp_code'] = $comp_code =$_POST['comp_code'];
