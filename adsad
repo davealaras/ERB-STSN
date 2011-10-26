@@ -1,0 +1,47 @@
+* [33mcommit 8cdb0865321acdab858439610b45bf43d353100a[m
+[31m|[m Author: Dave <arroyo.dave@yahoo.com>
+[31m|[m Date:   Wed Oct 26 21:16:32 2011 +0800
+[31m|[m 
+[31m|[m     Rawscorefix work in progress. Better version
+[31m|[m  
+* [33mcommit 531cfd6dc11e3548b76e6301aea171e320a9b879[m
+[31m|[m Author: Dave <arroyo.dave@yahoo.com>
+[31m|[m Date:   Wed Oct 26 20:08:41 2011 +0800
+[31m|[m 
+[31m|[m     RawScoreFix v1.1 Persistent
+[31m|[m  
+* [33mcommit 2ec2bf9b0123744d51fe3f8d6c983157280d42c0[m
+[31m|[m Author: unknown <arroyo.dave@yahoo.com>
+[31m|[m Date:   Wed Oct 26 19:28:07 2011 +0800
+[31m|[m 
+[31m|[m     Rawscore Bug Fix. Added school year to filter
+[31m|[m  
+* [33mcommit c8046e4fa226b7dde5c8aa46880c4642a7647adb[m
+[31m|[m Author: unknown <arroyo.dave@yahoo.com>
+[31m|[m Date:   Wed Oct 26 19:09:54 2011 +0800
+[31m|[m 
+[31m|[m     Rawscore Data Mutation and/or Migration. Plus can check bugs on the curriculum
+[31m|[m  
+* [33mcommit 4aac0d30aaafe40f7a3a207595391c1a3ff6f383[m
+[31m|[m Author: unknown <arroyo.dave@yahoo.com>
+[31m|[m Date:   Wed Oct 26 14:43:03 2011 +0800
+[31m|[m 
+[31m|[m     BUG FIX: Modify components and measurable items.
+[31m|[m  
+* [33mcommit 99d9632ec8e8ce48a638a6d070c958f3835020b8[m
+[31m|[m Author: unknown <arroyo.dave@yahoo.com>
+[31m|[m Date:   Tue Oct 25 18:45:40 2011 +0800
+[31m|[m 
+[31m|[m     Reports updated
+[31m|[m  
+* [33mcommit 1976662c4be72812fe5623bd123f6e98a890f67d[m
+[31m|[m Author: unknown <arroyo.dave@yahoo.com>
+[31m|[m Date:   Tue Oct 25 18:43:37 2011 +0800
+[31m|[m 
+[31m|[m     README added
+[31m|[m  
+* [33mcommit 891ccbf4e46aac4cc8e1dc04c7df0ba7e09a540a[m
+  Author: unknown <arroyo.dave@yahoo.com>
+  Date:   Tue Oct 25 18:22:11 2011 +0800
+  
+      Initial commit
