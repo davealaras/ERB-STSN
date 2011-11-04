@@ -2,13 +2,22 @@ $(document).ready(function() {
 	var QRT_EXAM = 'QE';
 	var QUIZ = 'QZ';
 	var DESC_OPTIONAL = true;
-	var ALLOW_DRAG = false;
+	var ALLOW_DRAG = true;
 	$('input[type="text"]').livequery('keypress', function(e){
 		if($(this).length==0&& e.which ==8){
 			e.preventDefault();			
 		}
 	});
 	
+	$( "#dialog:ui-dialog" ).dialog( "destroy" );
+	$( "#dialog-modal" ).dialog({
+		autoOpen:false,
+		height: 200,
+		modal: true,
+		draggable:false,
+		closeOnEscape: false,
+		open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+	});
 	$.ajax({
 			type: 'GET',
 			url: 'ajax.php',
@@ -397,24 +406,34 @@ $(document).ready(function() {
 	//Delete selected component
 	$('.delete-btn').livequery('click',function(){
 		var source = $(this).attr('inside');
-		var parent = $(this).parent().parent();
+		var target = $(this).parent().parent();
 		var index=0;
-		parent.fadeOut('slow', function(){
-			parent.remove();
-			$('#'+source).find('td.counter').each(function(){
-				index+=1;
-				$(this).html(index);
+		var key = $(target).attr('key');
+		var commit = confirm('Are you sure you want to delete this column?' + key + 'will be mapped out.') ;
+		if(commit){
+			$.ajax({
+				type: 'POST',
+				url: 'ajax.php',
+				data: {'key' :key, 'func':'del_measitem'},
+				success: function(data) {
+				$(target).fadeOut('slow', function(){
+					$(target).remove();
+					$('#'+source).find('td.counter').each(function(){
+						index+=1;
+						$(this).html(index);
+					});
+					//tbGenComp routine
+					if(source=='tbGenComp'){
+						$('#row-counter').text(index+=1);
+						computeSum();
+					}
+					else if(source=='tbMeasItem'){
+						$('#col-counter').text(index+=1);
+					}
+				});
+				}
 			});
-			//tbGenComp routine
-			if(source=='tbGenComp'){
-				$('#row-counter').text(index+=1);
-				computeSum();
-			}
-			else if(source=='tbMeasItem'){
-				$('#col-counter').text(index+=1);
-			}
-		});
-		
+		}
 	});
 	
 	//Save changes to selected component
@@ -661,6 +680,7 @@ $(document).ready(function() {
 			
 				var today = new Date();
 				var utcDate = today.toUTCString();
+				
 				//Save  record
 					$.ajax({
 						type: 'GET',
@@ -698,58 +718,65 @@ $(document).ready(function() {
 							if(!isComplete){
 								$('#nodata').show().html('<div class="warning"><strong>Warning:</strong> Could not save. Incomplete components.');
 							}else if(isComplete) {
+								var key=[];
 								var classcode=[];
 								var colnumber=[];
 								var header=[];
 								var description=[];
 								var noofitem=[];
 								var base=[];
-								//Collect class code
 								var index=0;
-								$.each($('#tbMeasItem tr').find('.classcode'),function(i,result){
+								//Collect keys
+								$.each($('#tbMeasItem .measurable'),function(i,result){
+									key[index] = $(result).attr('key');
+									index+=1;
+								});
+								//Collect class code
+								index=0;
+								$.each($('#tbMeasItem .measurable').find('.classcode'),function(i,result){
 									classcode[index] = result.innerHTML;
 									index+=1;
 								});
 								//Collect column number
 								index=0;
-								$.each($('#tbMeasItem tr').find('.counter'),function(i,result){
+								$.each($('#tbMeasItem .measurable').find('.counter'),function(i,result){
 									colnumber[index] = result.innerHTML;
 									index+=1;
 								});
 								//Collect header
 								var index=0;
-								$.each($('#tbMeasItem tr').find('.item-header div'),function(i,result){
+								$.each($('#tbMeasItem .measurable').find('.item-header div'),function(i,result){
 									header[index] = result.innerHTML;
 									index+=1;
 								});
 								//Collect description
 								index=0;
-								$.each($('#tbMeasItem tr').find('.type div'),function(i,result){
+								$.each($('#tbMeasItem .measurable').find('.type div'),function(i,result){
 									description[index] = result.innerHTML;
 									index+=1;
 								});
 								//Collect number of items
 								index=0;
-								$.each($('#tbMeasItem tr').find('.num-items div'),function(i,result){
+								$.each($('#tbMeasItem .measurable').find('.num-items div'),function(i,result){
 									noofitem[index] = result.innerHTML;
 									index+=1;
 								});
 								//Collect base
 								index=0;
-								$.each($('#tbMeasItem tr').find('.const-base div'),function(i,result){
+								$.each($('#tbMeasItem .measurable').find('.const-base div'),function(i,result){
 									base[index] = result.innerHTML;
 									index+=1;
 								});
 								$('#templates').attr('disabled', 'disabled');
 								//Submit record
-								
+								$( "#dialog-modal" ).dialog( "open" );
 								$.ajax({
 									type: 'POST',
 									url: 'ajax.php',
-									data: {'section_code' : section_code,'sy':sy, 'period': period, 'classcode': classcode, 'colnumber': colnumber, 
+									data: {'section_code' : section_code,'sy':sy, 'period': period, 'key':key,'classcode': classcode, 'colnumber': colnumber, 
 											'header':header, 'description': description, 'noofitem':noofitem, 'base':base, 'func': 'save_record_measitem'},
 									success: function(data) {
-										alert('Record saved');
+										$( "#dialog-modal" ).dialog( "close" );
 										var classcode = $('#load').find('option:selected').val();
 										var sy = $('#sy').find('option:selected').val();
 										var period = $('#period').find('option:selected').val();
@@ -826,13 +853,14 @@ $(document).ready(function() {
 		$('#tbMeasItem tbody').html('');
 		if(meas_obj!=null){
 			$.each(meas_obj,function(i,result){
+				var key = result.key;
 				var clctr = result.colnum;
 				var ccode =result.ccode;
 				var hdr = result.hdr;
 				var dsc = result.dsc==undefined?'Place description here.':result.dsc;
 				var itm =result.itm==undefined?'100':result.itm;
 				var bse =result.base;
-				var col = '<tr col-ctr='+clctr+' class="measurable">';
+				var col = '<tr col-ctr='+clctr+' key='+key+' class="measurable">';
 					col += '<td class="mini counter">'+clctr+'</td>';
 					col += '<td class="small classcode">'+ccode+'</td>';
 					col	+= '<td class="mini item-header"><div>'+hdr+'</div></td>';

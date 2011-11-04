@@ -270,6 +270,25 @@ class EGB{
 		}
 		return $results;
 	}
+	//Get Section Code 
+	public function get_seccode($section){
+		$results =array();
+		$query ="SELECT Section, SectionCode, Level, DeptCode FROM tb_mastersection WHERE Section LIKE '$section%'";
+		if ($stmt = $this->db_connection->prepare($query)) {			
+			$stmt->execute();
+			$stmt->bind_result($section,$seccode,$level, $dept);
+			$index=0;
+			while($stmt->fetch()){
+				$results[$index]['section']=$section;
+				$results[$index]['seccode']=$seccode;
+				$results[$index]['level']=$level;
+				$results[$index]['dept']=$dept;
+				$index+=1;
+			}
+			$stmt->close();		
+		}
+		return $results;
+	}
 	//MS Get Section Alias
 	public function ms_get_sec_alias($sec_code){
 		$results =array();
@@ -457,28 +476,103 @@ class EGB{
 			$stmt->close();		
 		}
 	}
-	//MS Prepare Record Measurable Items
-	public function ms_prepare_reccord_measitem($comp_code, $section_code, $sy,  $period){
-		$con = mssql_connect("DAVE-PC\DBASE","sa","12345");
-		mssql_select_db('egb',$con);
-		$query ="DELETE FROM nrol_measitem WHERE CompCode='$comp_code' AND SectionCode='$section_code' AND SY='$sy' AND Period='$period'";
-		mssql_query($query);
-	}
-	//Save Record Measurable Items
-	public function save_record_measitem($colnumber,$classcode,$header,$description,$noofitem, $base,$sy,  $period,$section_code,$comp_code){
-		$query = "INSERT INTO nrol_measitem (ColNumber, ClassCode, HeaderName, Description,  Items, Base, SY, Period, SectionCode, CompCode) ";
-		$query .=" VALUES('$colnumber','$classcode', '$header', '$description', '$noofitem', '$base', '$sy', ' $period', '$section_code', '$comp_code')";
+	//Prepare Record Measurable Items
+	public function delete_measitem($key){
+		$query ="DELETE FROM nrol_measitem WHERE MeasKey = '$key' ";
 		if ($stmt = $this->db_connection->prepare($query)) {			
 			$stmt->execute();
 			$stmt->fetch();
 			$stmt->close();		
 		}
+		return $query;
 	}
-	//MS Save Record Measurable Items
-	public function ms_save_record_measitem($colnumber,$classcode,$header,$description,$noofitem, $base,$sy,  $period,$section_code,$comp_code){
-		$query = "INSERT INTO nrol_measitem (ColNumber, ClassCode, HeaderName, Description,  Items, Base, SY, Period, SectionCode, CompCode) ";
-		$query .=" VALUES('$colnumber','$classcode', '$header', '$description', '$noofitem', '$base', '$sy', ' $period', '$section_code', '$comp_code')";
-		mssql_query($query);
+	//Save Record Measurable Items
+	public function save_record_measitem($key, $colnumber,$classcode,$header,$description,$noofitem, $base,$sy,  $period,$section_code,$comp_code){
+		
+		$queries = array();
+		$query1 = "SELECT COUNT(ColNumber)  FROM nrol_measitem WHERE ";
+		$query1 .= "MeasKey = '$key' AND ";
+		$query1 .= "ClassCode = '$classcode' AND ";
+		$query1 .= "SY = '$sy' AND ";
+		$query1 .= "Period = '$period' AND ";
+		$query1 .= "SectionCode = '$section_code' AND ";
+		$query1 .= "CompCode = '$comp_code' ";
+		$count=0;
+		array_push($queries, $query1);
+		if ($stmt = $this->db_connection->prepare($query1)) {	
+			$stmt->bind_result($count);
+			$stmt->execute();
+			$stmt->fetch();
+			$stmt->close();		
+		}
+		$query = " ";
+		if($count==0){
+			$query = "INSERT INTO nrol_measitem (ColNumber, ClassCode, HeaderName, Description,  Items, Base, SY, Period, SectionCode, CompCode) ";
+			$query .=" VALUES('$colnumber','$classcode', '$header', '$description', '$noofitem', '$base', '$sy', ' $period', '$section_code', '$comp_code')";
+		}else{
+			$query = "UPDATE nrol_measitem SET ColNumber='$colnumber',  HeaderName='$header', Description='$description',  Items='$noofitem', Base='$base' WHERE ";
+			$query .= "MeasKey = '$key' AND ";
+			$query .= "ClassCode = '$classcode' AND ";
+			$query .= "SY = '$sy' AND ";
+			$query .= "Period = '$period' AND ";
+			$query .= "SectionCode = '$section_code' AND ";
+			$query .= "CompCode = '$comp_code' ";
+		}
+		
+		if ($stmt = $this->db_connection->prepare($query)) {			
+			$stmt->execute();
+			$stmt->fetch();
+			$stmt->close();		
+		}
+		array_push($queries, $query);
+		return $queries;
+	}
+	//Get Measurable Items
+	public function get_meas($compcode, $seccode, $period, $sy){
+		$results = array();
+		$sql ="SELECT MeasKey, HeaderName, CompCode, SectionCode FROM nrol_measitem WHERE CompCode = '$compcode' AND SectionCode='$seccode' AND Period='$period' AND SY='$sy' ";
+		if ($stmt1 = $this->db_connection->prepare($sql)) {			
+			$stmt1->execute();
+			$stmt1->bind_result($id, $hdr,$compcode, $seccode);
+			$index=0;
+			while($stmt1->fetch()){
+				$results[$index]['id']=$id;
+				$results[$index]['hdr']=$hdr;
+				$results[$index]['compcode']=$compcode;
+				$results[$index]['seccode']=$seccode;
+				$index+=1;
+			}
+			$stmt1->close();		
+		}
+		return $results;
+	}
+	
+	// Check RawScore
+	public function check_rawscore($compcode, $seccode, $period, $sy){
+		$sql = "SELECT HeaderName FROM nrol_rawscore WHERE CompCode='$compcode' AND SectionCode='$seccode' AND Period='$period' AND SY='$sy'";
+		$val =false;
+		if ($stmt1 = $this->db_connection->prepare($sql)) {			
+			$stmt1->execute();
+			$stmt1->bind_result($hdr);
+			
+			while($stmt1->fetch()){
+				$val=true;
+				if($hdr==null){
+					$val = false;
+				}
+			}
+			$stmt1->close();		
+		}
+		return $val;
+	}
+	//Update Rawscore
+	public function update_rawscore($id, $hdr,$compcode, $seccode, $period, $sy){
+		$sql = "UPDATE nrol_rawscore SET MeasKey='$id' WHERE HeaderName='$hdr' AND CompCode='$compcode' AND SectionCode='$seccode' AND Period='$period' AND SY='$sy' ";
+		if ($stmt = $this->db_connection->prepare($sql)) {
+			$stmt->execute();
+			$stmt->fetch();
+			$stmt->close();
+		}
 	}
 	//Get System Default
 	public function get_sys_defa(){

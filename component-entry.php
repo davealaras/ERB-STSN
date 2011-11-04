@@ -1,3 +1,6 @@
+<div id="dialog-modal" title="Information">
+	<p><img src="img/ajax-loader.gif"/> Updating Record Book. Please Wait.</p>
+</div>
 <div class="tab">
 	<div class="tab-header">
 		Components
