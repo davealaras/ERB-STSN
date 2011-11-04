@@ -115,7 +115,7 @@
 		?>
 </ul>
 <?php 
-$page_name = substr($_SERVER['PHP_SELF'],10);
+$page_name = substr($_SERVER['PHP_SELF'],14);
 $redirect_url = "index.php";
 $logout_url = "logout.php";
 $register_url = "register.php";
